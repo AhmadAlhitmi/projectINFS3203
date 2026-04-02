@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from config import SECRET_KEY
 
 app = Flask(__name__)
@@ -7,7 +7,7 @@ app.secret_key = SECRET_KEY
 
 @app.route("/")
 def home():
-    return "Welcome to SmartNotes!"
+    return render_template("index.html", notes=[])
 
 
 @app.route("/health")
