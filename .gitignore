@@ -22,7 +22,7 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
-
+.dockerignore
 # Testing
 .pytest_cache/
 htmlcov/
