@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from config import SECRET_KEY
 from db import notes_collection
+from bson.objectid import ObjectId
 from datetime import datetime
 
 app = Flask(__name__)
@@ -36,6 +37,20 @@ def add_note():
     }
     notes_collection.insert_one(note)
     flash("Note saved successfully!", "success")
+    return redirect(url_for("home"))
+
+
+@app.route("/delete/<note_id>", methods=["POST"])
+def delete_note(note_id):
+    """Delete a note from the database by its ID."""
+    try:
+        result = notes_collection.delete_one({"_id": ObjectId(note_id)})
+        if result.deleted_count == 1:
+            flash("Note deleted.", "success")
+        else:
+            flash("Note not found.", "error")
+    except Exception:
+        flash("Invalid note ID.", "error")
     return redirect(url_for("home"))
 
 
