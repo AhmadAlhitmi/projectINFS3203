@@ -1,4 +1,7 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
+from flask import (
+    Flask, jsonify, render_template,
+    request, redirect, url_for, flash
+)
 from config import SECRET_KEY
 from db import notes_collection
 from ai import generate_summary
