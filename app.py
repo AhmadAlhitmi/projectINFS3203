@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from config import SECRET_KEY
 from db import notes_collection
+from ai import generate_summary
 from bson.objectid import ObjectId
 from datetime import datetime
 
@@ -51,6 +52,26 @@ def delete_note(note_id):
             flash("Note not found.", "error")
     except Exception:
         flash("Invalid note ID.", "error")
+    return redirect(url_for("home"))
+
+
+@app.route("/summarize/<note_id>", methods=["POST"])
+def summarize_note(note_id):
+    """Generate an AI summary for a specific note."""
+    try:
+        note = notes_collection.find_one({"_id": ObjectId(note_id)})
+        if not note:
+            flash("Note not found.", "error")
+            return redirect(url_for("home"))
+
+        summary = generate_summary(note["text"])
+        notes_collection.update_one(
+            {"_id": ObjectId(note_id)},
+            {"$set": {"summary": summary}}
+        )
+        flash("Summary generated successfully!", "success")
+    except Exception as e:
+        flash(f"Error generating summary: {str(e)}", "error")
     return redirect(url_for("home"))
 
 
