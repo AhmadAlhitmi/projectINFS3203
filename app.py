@@ -9,7 +9,9 @@ app.secret_key = SECRET_KEY
 
 @app.route("/")
 def home():
-    return render_template("index.html", notes=[])
+    """Display all saved notes, newest first."""
+    notes = list(notes_collection.find().sort("created_at", -1))
+    return render_template("index.html", notes=notes)
 
 
 @app.route("/health")
