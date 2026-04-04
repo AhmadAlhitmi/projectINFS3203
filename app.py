@@ -1,5 +1,7 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from config import SECRET_KEY
+from db import notes_collection
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -14,6 +16,25 @@ def home():
 def health():
     """Health check endpoint for container monitoring."""
     return jsonify({"status": "healthy", "app": "SmartNotes"}), 200
+
+
+@app.route("/notes", methods=["POST"])
+def add_note():
+    """Save a new study note to the database."""
+    text = request.form.get("text", "").strip()
+
+    if not text:
+        flash("Note cannot be empty.", "error")
+        return redirect(url_for("home"))
+
+    note = {
+        "text": text,
+        "created_at": datetime.utcnow(),
+        "summary": None
+    }
+    notes_collection.insert_one(note)
+    flash("Note saved successfully!", "success")
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
