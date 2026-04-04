@@ -3,7 +3,7 @@ import requests
 from config import GEMINI_API_KEY
 
 MODEL = "gemini-2.5-flash-lite"
-API_ENDPOINT = f"https://aiplatform.googleapis.com/v1/publishers/google/models/%7BMODEL%7D:generateContent"
+API_ENDPOINT = f"https://aiplatform.googleapis.com/v1/publishers/google/models/{MODEL}:generateContent"
 
 
 def generate_summary(text):
@@ -37,4 +37,4 @@ def generate_summary(text):
         result = response.json()
         return result["candidates"][0]["content"]["parts"][0]["text"]
     except Exception as e:
-        raise Exception(f"AI summary generation failed: {str(e)}") 
+        raise Exception(f"AI summary generation failed: {str(e)}")
