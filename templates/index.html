@@ -13,6 +13,17 @@
             <p class="subtitle">AI-Powered Study Assistant</p>
         </header>
 
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <!-- Add Note Section -->
         <section class="add-note">
             <h2>Add a Study Note</h2>
@@ -32,7 +43,7 @@
 
         <!-- Saved Notes Section -->
         <section class="notes-list">
-            <h2>Saved Notes</h2>
+            <h2>Saved Notes ({{ notes|length }})</h2>
             {% if notes %}
                 {% for note in notes %}
                 <div class="note-card">
