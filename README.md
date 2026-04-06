@@ -1,4 +1,4 @@
-# SmartNotes: AI-Powered Study Assistant
+# SmartNotes- AI-Powered Study Assistant
 
 SmartNotes is a web application that helps students organize their study notes and generate AI-powered summaries to improve learning efficiency. Users can input study material, store it in a database, and use Google Gemini to generate concise summaries of their content.
 
