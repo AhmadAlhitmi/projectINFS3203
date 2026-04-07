@@ -105,7 +105,7 @@ git push to main
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/smartnotes.git
+git clone https://github.com/AhmadAlhitmi/projectINFS3203
 cd smartnotes
 
 # Create virtual environment
