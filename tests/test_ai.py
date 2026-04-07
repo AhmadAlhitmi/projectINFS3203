@@ -12,36 +12,38 @@ def client():
         yield client
 
 
-@patch("ai.genai")
-def test_generate_summary_returns_text(mock_genai):
+@patch("ai.requests.post")
+def test_generate_summary_returns_text(mock_post):
     """Test that generate_summary returns a string on success."""
-    mock_model = MagicMock()
     mock_response = MagicMock()
-    mock_response.text = "This is a concise summary of the study notes."
-    mock_model.generate_content.return_value = mock_response
-    mock_genai.GenerativeModel.return_value = mock_model
+    mock_response.json.return_value = {
+        "candidates": [
+            {
+                "content": {
+                    "parts": [{"text": "This is a concise summary of the study notes."}]
+                }
+            }
+        ]
+    }
+    mock_response.raise_for_status = MagicMock()
+    mock_post.return_value = mock_response
 
     from ai import generate_summary
-    with patch("ai.genai", mock_genai):
-        mock_genai.GenerativeModel.return_value = mock_model
-        result = generate_summary("Some long study notes about biology")
+    result = generate_summary("Some long study notes about biology")
 
     assert isinstance(result, str)
     assert len(result) > 0
 
 
-@patch("ai.genai")
-def test_generate_summary_handles_api_error(mock_genai):
+@patch("ai.requests.post")
+def test_generate_summary_handles_api_error(mock_post):
     """Test that generate_summary raises an exception on API failure."""
-    mock_model = MagicMock()
-    mock_model.generate_content.side_effect = Exception("API quota exceeded")
-    mock_genai.GenerativeModel.return_value = mock_model
+    mock_post.side_effect = Exception("API quota exceeded")
 
     from ai import generate_summary
-    with patch("ai.genai", mock_genai):
-        with pytest.raises(Exception) as exc_info:
-            generate_summary("Test notes")
-        assert "AI summary generation failed" in str(exc_info.value)
+    with pytest.raises(Exception) as exc_info:
+        generate_summary("Test notes")
+    assert "AI summary generation failed" in str(exc_info.value)
 
 
 def test_summarize_route_updates_note(client):
