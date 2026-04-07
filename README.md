@@ -4,7 +4,7 @@ SmartNotes is a web application that helps students organize their study notes a
 
 ## Live URL
 
-**[https://smartnotes-xxxx.onrender.com](https://smartnotes-xxxx.onrender.com)** *https://smartnotes-oqjo.onrender.com*
+ *https://smartnotes-oqjo.onrender.com*
 
 ## Features
 
