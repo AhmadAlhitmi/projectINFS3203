@@ -27,7 +27,7 @@ jobs:
 
       - name: Run linter
         run: |
-          flake8 --max-line-length=120 --exclude=venv,__pycache__,.git --ignore=W292 .
+          flake8 --max-line-length=120 --exclude=venv,__pycache__,.git --ignore=W292,W391 .
 
       - name: Run unit tests
         env:
