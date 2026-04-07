@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from app import app
 
 
@@ -21,6 +22,8 @@ def test_health_endpoint(client):
 
 def test_home_page(client):
     """Test that the home page loads successfully."""
-    response = client.get("/")
-    assert response.status_code == 200
-    assert b"SmartNotes" in response.data
+    with patch("app.notes_collection") as mock_collection:
+        mock_collection.find.return_value.sort.return_value = []
+        response = client.get("/")
+        assert response.status_code == 200
+        assert b"SmartNotes" in response.data
