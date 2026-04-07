@@ -1,0 +1,44 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+
+      - name: Run linter
+        run: |
+          flake8 --max-line-length=120 --exclude=venv,__pycache__,.git --ignore=W292 .
+
+      - name: Run tests before deploy
+        env:
+          MONGO_URI: mongodb://localhost:27017/testdb
+          GEMINI_API_KEY: test-key-for-cd
+          SECRET_KEY: cd-test-secret
+        run: |
+          pytest tests/ -v --tb=short
+
+      - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          curl -X POST "$RENDER_DEPLOY_HOOK"
+          echo "Render deploy triggered successfully"
